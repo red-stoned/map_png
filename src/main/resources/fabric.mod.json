@@ -1,0 +1,36 @@
+{
+	"schemaVersion": 1,
+	"id": "map_png",
+	"version": "${version}",
+	"name": "Map.png",
+	"description": "Download maps in hand and in item frames as .png files",
+	"authors": [
+		"Galiano"
+	],
+	"contact": {
+		"homepage": "https://holebois.com",
+		"sources": "https://github.com/holebois/map_png",
+		"issues": "https://github.com/holebois/map_png/issues"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/map_png/icon.png",
+	"environment": "client",
+	"entrypoints": {
+		"client": [
+			"com.holebois.map_png.MapPngClient"
+		]
+	},
+	"mixins": [
+		{
+			"config": "map_png.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"accessWidener": "map_png.accesswidener",
+	"depends": {
+		"fabricloader": ">=0.15.0",
+		"minecraft": "~1.20.4",
+		"java": ">=17",
+		"fabric-api": "*"
+	}
+}

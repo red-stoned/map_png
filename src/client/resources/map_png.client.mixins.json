@@ -1,0 +1,12 @@
+{
+	"required": true,
+	"package": "com.holebois.map_png.mixin.client",
+	"compatibilityLevel": "JAVA_17",
+	"client": [
+		"MapRendererInvoker",
+		"MapTextureAccessor"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}
