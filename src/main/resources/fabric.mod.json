@@ -12,7 +12,7 @@
 		"sources": "https://github.com/holebois/map_png",
 		"issues": "https://github.com/holebois/map_png/issues"
 	},
-	"license": "CC0-1.0",
+	"license": "MIT",
 	"icon": "assets/map_png/icon.png",
 	"environment": "client",
 	"entrypoints": {
