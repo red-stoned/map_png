@@ -5,6 +5,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Optional;
 
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.MapIdComponent;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,7 +58,7 @@ public class MapPngClient implements ClientModInitializer {
         }).start();
     }
 
-	public void downloadMap(MapState mapState, int mapId) {
+	public void downloadMap(MapState mapState, MapIdComponent mapId) {
         MinecraftClient client = MinecraftClient.getInstance();
 		MapRenderer.MapTexture texture = ((MapRendererInvoker)client.gameRenderer.getMapRenderer()).invokeGetMapTexture(mapId, mapState);
         
@@ -75,7 +77,7 @@ public class MapPngClient implements ClientModInitializer {
             return;
         }
         
-        File mapfile = new File(save_dir, "map_" + mapId + ".png");
+        File mapfile = new File(save_dir, "map_" + mapId.id() + ".png");
 
         try {
             Optional<NativeImageBackedTexture> backing_texture = Optional.ofNullable(((MapTextureAccessor)texture).getTexture());
@@ -114,6 +116,10 @@ public class MapPngClient implements ClientModInitializer {
         }
 	}
 
+    public static MapIdComponent getMapId(ItemStack stack) {
+        return stack.get(DataComponentTypes.MAP_ID);
+    }
+
 	
 
 	@Override
@@ -125,7 +131,7 @@ public class MapPngClient implements ClientModInitializer {
 				ItemStack held = client.player.getMainHandStack();
 				if (held.getItem() == Items.FILLED_MAP) {
 					MapState mapState = FilledMapItem.getMapState(held, client.world);
-                    downloadMap(mapState, FilledMapItem.getMapId(held));
+                    downloadMap(mapState, getMapId(held));
 					return;
 				}
                 HitResult hit = client.crosshairTarget;
@@ -136,7 +142,7 @@ public class MapPngClient implements ClientModInitializer {
                         ItemStack map = frame.getHeldItemStack();
                         if (map.getItem() == Items.FILLED_MAP) {
                             MapState mapState = FilledMapItem.getMapState(map, client.world);
-                            downloadMap(mapState, FilledMapItem.getMapId(map));
+                            downloadMap(mapState, frame.getMapId());
                             return;
                         }
                     
