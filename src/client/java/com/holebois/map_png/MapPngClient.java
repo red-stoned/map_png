@@ -142,7 +142,7 @@ public class MapPngClient implements ClientModInitializer {
                         ItemStack map = frame.getHeldItemStack();
                         if (map.getItem() == Items.FILLED_MAP) {
                             MapState mapState = FilledMapItem.getMapState(map, client.world);
-                            downloadMap(mapState, frame.getMapId());
+                            downloadMap(mapState, frame.getMapId(map));
                             return;
                         }
                     

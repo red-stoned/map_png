@@ -5,7 +5,8 @@
 	"name": "Map.png",
 	"description": "Download maps in hand and in item frames as .png files",
 	"authors": [
-		"Galiano"
+		"Galiano",
+		"Kroojel"
 	],
 	"contact": {
 		"homepage": "https://holebois.com",
@@ -29,7 +30,7 @@
 	"accessWidener": "map_png.accesswidener",
 	"depends": {
 		"fabricloader": ">=0.15.10",
-		"minecraft": "~1.20.6",
+		"minecraft": "~1.21",
 		"java": ">=21",
 		"fabric-api": "*"
 	}
