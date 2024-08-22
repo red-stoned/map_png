@@ -68,7 +68,7 @@ public class MapPngClient implements ClientModInitializer {
             save_dir = new File(save_dir, client.getServer().getSavePath(WorldSavePath.ROOT).getParent().getFileName().toString());
         } else {
             save_dir = new File(save_dir, "multiplayer");
-            save_dir = new File(save_dir, client.getCurrentServerEntry().address);
+            save_dir = new File(save_dir, client.getCurrentServerEntry().address.replace(":", "_"));
         }
 
 
