@@ -20,6 +20,7 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.render.MapRenderer;
+import net.minecraft.client.texture.MapTextureManager;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.texture.NativeImageBackedTexture;
 import net.minecraft.client.toast.SystemToast;
@@ -60,7 +61,7 @@ public class MapPngClient implements ClientModInitializer {
 
 	public void downloadMap(MapState mapState, MapIdComponent mapId) {
         MinecraftClient client = MinecraftClient.getInstance();
-		MapRenderer.MapTexture texture = ((MapRendererInvoker)client.gameRenderer.getMapRenderer()).invokeGetMapTexture(mapId, mapState);
+		MapTextureManager.MapTexture texture = ((MapRendererInvoker)client.getMapTextureManager()).invokeGetMapTexture(mapId, mapState);
         
         File save_dir = new File(client.runDirectory, "maps");
         if (client.isInSingleplayer()) {
@@ -82,14 +83,14 @@ public class MapPngClient implements ClientModInitializer {
         try {
             Optional<NativeImageBackedTexture> backing_texture = Optional.ofNullable(((MapTextureAccessor)texture).getTexture());
             if (backing_texture.isEmpty()) { // immediatelyFast workaround
-                Field atlasf = MapRenderer.MapTexture.class.getDeclaredField("immediatelyFast$atlasTexture");
+                Field atlasf = MapTextureManager.MapTexture.class.getDeclaredField("immediatelyFast$atlasTexture");
                 atlasf.setAccessible(true);
                 Object atlas = atlasf.get(texture);
 
-                Field atlasx = MapRenderer.MapTexture.class.getDeclaredField("immediatelyFast$atlasX");
+                Field atlasx = MapTextureManager.MapTexture.class.getDeclaredField("immediatelyFast$atlasX");
                 atlasx.setAccessible(true);
                 int x = (int) atlasx.get(texture);
-                Field atlasy = MapRenderer.MapTexture.class.getDeclaredField("immediatelyFast$atlasY");
+                Field atlasy = MapTextureManager.MapTexture.class.getDeclaredField("immediatelyFast$atlasY");
                 atlasy.setAccessible(true);
                 int y = (int) atlasy.get(texture);
 

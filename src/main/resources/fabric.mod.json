@@ -29,8 +29,8 @@
 	],
 	"accessWidener": "map_png.accesswidener",
 	"depends": {
-		"fabricloader": ">=0.15.10",
-		"minecraft": "~1.21",
+		"fabricloader": ">=0.16.7",
+		"minecraft": "~1.21.2-beta.3",
 		"java": ">=21",
 		"fabric-api": "*"
 	}
