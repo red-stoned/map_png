@@ -1,15 +1,13 @@
 package com.holebois.map_png.mixin.client;
 
-// import net.minecraft.client.render.MapRenderer;
-import net.minecraft.client.texture.MapTextureManager;
-import net.minecraft.component.type.MapIdComponent;
+import net.minecraft.client.render.MapRenderer;
 import net.minecraft.item.map.MapState;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
-@Mixin(MapTextureManager.class)
+@Mixin(MapRenderer.class)
 public interface MapRendererInvoker {
 
     @Invoker("getMapTexture")
-    MapTextureManager.MapTexture invokeGetMapTexture(MapIdComponent id, MapState state);
+    MapRenderer.MapTexture invokeGetMapTexture(int id, MapState state);
 }

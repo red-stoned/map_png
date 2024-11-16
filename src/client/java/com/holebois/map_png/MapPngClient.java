@@ -5,8 +5,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Optional;
 
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.MapIdComponent;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +18,6 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.render.MapRenderer;
-import net.minecraft.client.texture.MapTextureManager;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.texture.NativeImageBackedTexture;
 import net.minecraft.client.toast.SystemToast;
@@ -59,9 +56,9 @@ public class MapPngClient implements ClientModInitializer {
         }).start();
     }
 
-	public void downloadMap(MapState mapState, MapIdComponent mapId) {
+	public void downloadMap(MapState mapState, int mapId) {
         MinecraftClient client = MinecraftClient.getInstance();
-		MapTextureManager.MapTexture texture = ((MapRendererInvoker)client.getMapTextureManager()).invokeGetMapTexture(mapId, mapState);
+		MapRenderer.MapTexture texture = ((MapRendererInvoker)client.gameRenderer.getMapRenderer()).invokeGetMapTexture(mapId, mapState);
         
         File save_dir = new File(client.runDirectory, "maps");
         if (client.isInSingleplayer()) {
@@ -78,19 +75,19 @@ public class MapPngClient implements ClientModInitializer {
             return;
         }
         
-        File mapfile = new File(save_dir, "map_" + mapId.id() + ".png");
+        File mapfile = new File(save_dir, "map_" + mapId + ".png");
 
         try {
             Optional<NativeImageBackedTexture> backing_texture = Optional.ofNullable(((MapTextureAccessor)texture).getTexture());
             if (backing_texture.isEmpty()) { // immediatelyFast workaround
-                Field atlasf = MapTextureManager.MapTexture.class.getDeclaredField("immediatelyFast$atlasTexture");
+                Field atlasf = MapRenderer.MapTexture.class.getDeclaredField("immediatelyFast$atlasTexture");
                 atlasf.setAccessible(true);
                 Object atlas = atlasf.get(texture);
 
-                Field atlasx = MapTextureManager.MapTexture.class.getDeclaredField("immediatelyFast$atlasX");
+                Field atlasx = MapRenderer.MapTexture.class.getDeclaredField("immediatelyFast$atlasX");
                 atlasx.setAccessible(true);
                 int x = (int) atlasx.get(texture);
-                Field atlasy = MapTextureManager.MapTexture.class.getDeclaredField("immediatelyFast$atlasY");
+                Field atlasy = MapRenderer.MapTexture.class.getDeclaredField("immediatelyFast$atlasY");
                 atlasy.setAccessible(true);
                 int y = (int) atlasy.get(texture);
 
@@ -117,12 +114,6 @@ public class MapPngClient implements ClientModInitializer {
         }
 	}
 
-    public static MapIdComponent getMapId(ItemStack stack) {
-        return stack.get(DataComponentTypes.MAP_ID);
-    }
-
-	
-
 	@Override
 	public void onInitializeClient() {
 		KeyBindingHelper.registerKeyBinding(download_key);
@@ -132,7 +123,7 @@ public class MapPngClient implements ClientModInitializer {
 				ItemStack held = client.player.getMainHandStack();
 				if (held.getItem() == Items.FILLED_MAP) {
 					MapState mapState = FilledMapItem.getMapState(held, client.world);
-                    downloadMap(mapState, getMapId(held));
+                    downloadMap(mapState, FilledMapItem.getMapId(held));
 					return;
 				}
                 HitResult hit = client.crosshairTarget;
@@ -143,7 +134,7 @@ public class MapPngClient implements ClientModInitializer {
                         ItemStack map = frame.getHeldItemStack();
                         if (map.getItem() == Items.FILLED_MAP) {
                             MapState mapState = FilledMapItem.getMapState(map, client.world);
-                            downloadMap(mapState, frame.getMapId(map));
+                            downloadMap(mapState, FilledMapItem.getMapId(map));
                             return;
                         }
                     

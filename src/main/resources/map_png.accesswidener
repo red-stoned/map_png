@@ -1,2 +1,2 @@
 accessWidener	v1	named
-accessible class net/minecraft/client/texture/MapTextureManager$MapTexture
+accessible class net/minecraft/client/render/MapRenderer$MapTexture
