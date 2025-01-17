@@ -19,23 +19,27 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.render.MapRenderer;
 import net.minecraft.client.texture.MapTextureManager;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.texture.NativeImageBackedTexture;
 import net.minecraft.client.toast.SystemToast;
 import net.minecraft.client.util.InputUtil;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.decoration.ItemFrameEntity;
+import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.item.FilledMapItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.map.MapState;
+import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.WorldSavePath;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
+import net.minecraft.util.math.Box;
+import net.minecraft.util.math.Vec3d;
 
 
 
@@ -46,6 +50,7 @@ public class MapPngClient implements ClientModInitializer {
 		InputUtil.Type.KEYSYM,
 		GLFW.GLFW_KEY_F8,
 		"key.category.map_png");
+    private static double raycastDist = 100;
 
     public static void showToast(Text title, Text msg) {
         new Thread(() -> {
@@ -121,22 +126,30 @@ public class MapPngClient implements ClientModInitializer {
         return stack.get(DataComponentTypes.MAP_ID);
     }
 
-	
+    // yoinked from net.minecraft.class_757.method_56153
+    public static EntityHitResult eraycast(Entity cam, double dist) {
+        Vec3d min = cam.getCameraPosVec(1.0F);
+        Vec3d rot = cam.getRotationVec(1.0F);
+        Vec3d max = min.add(rot.x * dist, rot.y * dist, rot.z * dist);
+        Box box = cam.getBoundingBox().stretch(rot.multiply(dist)).expand(1.0D, 1.0D, 1.0D);
+
+        return ProjectileUtil.raycast(cam, min, max, box, EntityPredicates.CAN_HIT, dist * dist);
+    }
 
 	@Override
 	public void onInitializeClient() {
 		KeyBindingHelper.registerKeyBinding(download_key);
 		
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
-			while (download_key.wasPressed()) {
+			if (download_key.wasPressed()) {
 				ItemStack held = client.player.getMainHandStack();
 				if (held.getItem() == Items.FILLED_MAP) {
 					MapState mapState = FilledMapItem.getMapState(held, client.world);
                     downloadMap(mapState, getMapId(held));
 					return;
 				}
-                HitResult hit = client.crosshairTarget;
-                if (hit.getType() == HitResult.Type.ENTITY) {
+                HitResult hit = eraycast(client.cameraEntity, raycastDist);
+                if (hit != null && hit.getType() == HitResult.Type.ENTITY) {
                     EntityHitResult entityHit = (EntityHitResult) hit;
                     if (entityHit.getEntity() instanceof ItemFrameEntity) {
                         ItemFrameEntity frame = (ItemFrameEntity) entityHit.getEntity();
