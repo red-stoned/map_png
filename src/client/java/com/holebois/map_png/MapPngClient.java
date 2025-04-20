@@ -106,10 +106,10 @@ public class MapPngClient implements ClientModInitializer {
             } else {
                 backing_texture.get().getImage().writeTo(mapfile);
             }
-            
+            // ClickEvent.OpenFile
 
             Text text = (Text.literal (mapfile.getName())).formatted(Formatting.UNDERLINE, Formatting.GREEN).styled((style) ->
-            style.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, mapfile.getAbsolutePath())));
+            style.withClickEvent((ClickEvent)new ClickEvent.OpenFile(mapfile.getAbsolutePath())));
             client.player.sendMessage(Text.translatable("map_png.success", text), false);
         } catch (Exception e) {
             e.printStackTrace();
