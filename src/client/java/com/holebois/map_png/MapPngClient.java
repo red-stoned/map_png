@@ -19,7 +19,6 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.render.MapRenderer;
 import net.minecraft.client.texture.MapTextureManager;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.texture.NativeImageBackedTexture;
@@ -33,6 +32,7 @@ import net.minecraft.item.map.MapState;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.WorldSavePath;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
@@ -40,12 +40,9 @@ import net.minecraft.util.hit.HitResult;
 
 
 public class MapPngClient implements ClientModInitializer {
-	public static final Logger LOGGER = LoggerFactory.getLogger("map_png");
-	private static final KeyBinding download_key = new KeyBinding(
-		"key.map_png.download",
-		InputUtil.Type.KEYSYM,
-		GLFW.GLFW_KEY_F8,
-		"key.category.map_png");
+    public static final Logger LOGGER = LoggerFactory.getLogger("map_png");
+    private static final KeyBinding.Category MAP_PNG_KEY_CATEGORY = KeyBinding.Category.create(Identifier.of("map_png"));
+	private static final KeyBinding download_key = new KeyBinding("key.map_png.download", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_F8, MAP_PNG_KEY_CATEGORY);
 
     public static void showToast(Text title, Text msg) {
         new Thread(() -> {
