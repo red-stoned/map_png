@@ -27,11 +27,10 @@
 			"environment": "client"
 		}
 	],
-	"accessWidener": "map_png.accesswidener",
+	"accessWidener": "map_png.classtweaker",
 	"depends": {
 		"fabricloader": ">=0.16.10",
-		"minecraft": "~1.21.11",
-		"java": ">=21",
+		"minecraft": "~26.1",
 		"fabric-api": "*"
 	}
 }
