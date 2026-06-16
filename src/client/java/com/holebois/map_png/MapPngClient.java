@@ -46,7 +46,7 @@ public class MapPngClient implements ClientModInitializer {
 
     public static void showToast(Component title, Component msg) {
         SystemToast t = new SystemToast(SystemToast.SystemToastId.PACK_LOAD_FAILURE, title, msg);
-        Minecraft.getInstance().getToastManager().addToast(t);
+        Minecraft.getInstance().gui.toastManager().addToast(t);
     }
 
 	public void downloadMap(MapItemSavedData mapState, MapId mapId) {
