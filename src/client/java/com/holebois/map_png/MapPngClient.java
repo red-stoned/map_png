@@ -11,7 +11,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.MapItem;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
-import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,7 +41,7 @@ import net.minecraft.world.level.storage.LevelResource;
 public class MapPngClient implements ClientModInitializer {
     public static final Logger LOGGER = LoggerFactory.getLogger("map_png");
     private static final KeyMapping.Category MAP_PNG_KEY_CATEGORY = KeyMapping.Category.register(Identifier.parse("map_png"));
-	private static final KeyMapping download_key = new KeyMapping("key.map_png.download", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_F8, MAP_PNG_KEY_CATEGORY);
+	private static final KeyMapping download_key = new KeyMapping("key.map_png.download", InputConstants.Type.KEYBOARD, InputConstants.KEY_F8, MAP_PNG_KEY_CATEGORY);
 
     public static void showToast(Component title, Component msg) {
         SystemToast t = new SystemToast(SystemToast.SystemToastId.PACK_LOAD_FAILURE, title, msg);
